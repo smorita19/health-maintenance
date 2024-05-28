@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>予防医療実施項目リスト</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>予防医療実施項目リスト</h1>
+    <form id="inputForm">
+        <label for="age">年齢:</label>
+        <input type="number" id="age" name="age" required><br><br>
+        <label for="gender">性別:</label>
+        <select id="gender" name="gender" required>
+            <option value="male">男性</option>
+            <option value="female">女性</option>
+        </select><br><br>
+        <label for="smoking">喫煙歴:</label>
+        <select id="smoking" name="smoking" required>
+            <option value="none">なし</option>
+            <option value="current">現在喫煙中</option>
+            <option value="former">過去に喫煙</option>
+        </select><br><br>
+        <button type="button" onclick="generateList()">リストを生成</button>
+    </form>
+    <h2>実施すべき項目</h2>
+    <table id="resultTable">
+        <thead>
+            <tr>
+                <th>項目</th>
+                <th>実施済み</th>
+                <th>実施日</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 結果がここに表示されます -->
+        </tbody>
+    </table>
+    <script>
+        function generateList() {
+            const age = document.getElementById('age').value;
+            const gender = document.getElementById('gender').value;
+            const smoking = document.getElementById('smoking').value;
+
+            let results = [];
+
+            // 予防接種のロジック
+            if (age >= 65) {
+                results.push('肺炎球菌ワクチン');
+            }
+            results.push('インフルエンザワクチン');
+            results.push('破傷風ワクチン');
+            if (age >= 19 && age <= 59 || (age >= 60 && (gender === 'male' || smoking === 'current' || smoking === 'former'))) {
+                results.push('B型肝炎ワクチン');
+            }
+            if (age >= 50) {
+                results.push('帯状疱疹ワクチン');
+            }
+            if (gender === 'female' && age <= 26) {
+                results.push('HPVワクチン');
+            }
+            results.push('麻疹・風疹ワクチン');
+            results.push('新型コロナウイルスワクチン');
+
+            // がん検診のロジック
+            if (age >= 45 && age <= 75) {
+                results.push('大腸がん検診');
+            }
+            if (age >= 50) {
+                results.push('胃がん検診');
+                results.push('乳がん検診');
+            }
+            if (gender === 'female' && age >= 21 && age <= 65) {
+                results.push('子宮頸がん検診');
+            }
+            if (age >= 50 && smoking !== 'none') {
+                results.push('肺がん検診');
+            }
+
+            // 生活習慣病のロジック
+            results.push('高血圧検査');
+            results.push('脂質異常症検査');
+            results.push('糖尿病検査');
+            results.push('肥満検査');
+            if (smoking !== 'none') {
+                results.push('禁煙指導');
+            }
+            results.push('飲酒指導');
+            results.push('定期的な運動指導');
+            results.push('歯科受診');
+
+            // 全般のロジック
+            if (age >= 65) {
+                results.push('骨粗鬆症検査');
+                results.push('転倒予防');
+            }
+            if (age >= 65 && gender === 'male' && (smoking === 'current' || smoking === 'former')) {
+                results.push('腹部大動脈瘤検査');
+            }
+            if (gender === 'female' && age <= 24) {
+                results.push('淋菌・クラミジア感染症検査');
+            }
+            results.push('C型肝炎検査');
+            results.push('うつ病検査');
+
+            // 結果をテーブルに表示
+            const tableBody = document.getElementById('resultTable').querySelector('tbody');
+            tableBody.innerHTML = '';
+            results.forEach(result => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${result}</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="date"></td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+    </script>
+</body>
+</html>
